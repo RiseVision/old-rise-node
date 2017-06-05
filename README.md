@@ -6,11 +6,11 @@ Automatic install script for Debian based systems Ubuntu, Mint, Debian.
 
 Install Rise (Mainnet)
 ```
-git clone https://lepetitjan@bitbucket.org/lepetitjan/rise-node.git && rise-node/rise_manager.bash install
+git clone https://github.com/RiseVision/rise-node.git && rise-node/rise_manager.bash install
 ```
 Install Rise (Testnet)
 ```
-git clone -b testnet https://lepetitjan@bitbucket.org/lepetitjan/rise-node.git && rise-node/rise_manager.bash install
+git clone -b testnet https://github.com/RiseVision/rise-node.git && rise-node/rise_manager.bash install
 ```
 Update Rise Manager
 ```
@@ -63,7 +63,7 @@ This program is free software: you can redistribute it and/or modify it under th
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the [GNU General Public License](https://bitbucket.org/lepetitjan/rise-node/src/master/LICENSE) along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the [GNU General Public License](https://github.com/RiseVision/rise-node/src/master/LICENSE) along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ***
 
