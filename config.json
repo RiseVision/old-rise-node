@@ -8,6 +8,7 @@
     "trustProxy": false,
     "topAccounts": false,
     "db": {
+        "install": true,
         "host": "localhost",
         "port": 5432,
         "database": "rise_testnet_db",

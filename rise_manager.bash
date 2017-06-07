@@ -24,6 +24,8 @@ RISE_CONFIG="config.json"
 DB_NAME="$(grep "database" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
 DB_UNAME="$(grep "user" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
 DB_PASSWD="$(grep "password" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
+DB_HOST="$(grep "host" $RISE_CONFIG | cut -f 4 -d '"' | head -2 | tail -1)"
+DB_PORT="$(grep "port" $RISE_CONFIG | head -2 | tail -1 | awk '{print $2}' | cut -d ',' -f1)"
 DB_SNAPSHOT="blockchain.db.gz"
 NETWORK=""
 set_network
@@ -58,25 +60,28 @@ install_prereq() {
 #    sudo apt-get purge -y -qq postgres* &>> $logfile || \
 #    { echo "Could not remove former installation of postgresql. Exiting." && exit 1; };
 #    echo -e "done.\n"
+    if [[ "$(grep install $RISE_CONFIG |  awk '{print $2}' | cut -d ',' -f1)" == "true" ]]; then
+      echo -n "Updating apt repository sources for postgresql.. ";
+      sudo bash -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list' &>> $logfile || \
+      { echo "Could not add postgresql repo to apt." && exit 1; }
+      echo -e "done.\n"
 
-    echo -n "Updating apt repository sources for postgresql.. ";
-    sudo bash -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list' &>> $logfile || \
-    { echo "Could not add postgresql repo to apt." && exit 1; }
-    echo -e "done.\n"
+      echo -n "Adding postgresql repo key... "
+      sudo wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add - &>> $logfile || \
+      { echo "Could not add postgresql repo key. Exiting." && exit 1; }
+      echo -e "done.\n"
 
-    echo -n "Adding postgresql repo key... "
-    sudo wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add - &>> $logfile || \
-    { echo "Could not add postgresql repo key. Exiting." && exit 1; }
-    echo -e "done.\n"
+      echo -n "Installing postgresql... "
+      sudo apt-get update -qq &> /dev/null && sudo apt-get install -y -qq postgresql-9.6 postgresql-contrib-9.6 libpq-dev &>> $logfile || \
+      { echo "Could not install postgresql. Exiting." && exit 1; }
+      echo -e "done.\n"
 
-    echo -n "Installing postgresql... "
-    sudo apt-get update -qq &> /dev/null && sudo apt-get install -y -qq postgresql-9.6 postgresql-contrib-9.6 libpq-dev &>> $logfile || \
-    { echo "Could not install postgresql. Exiting." && exit 1; }
-    echo -e "done.\n"
-
-    echo -n "Enable postgresql... "
-        sudo update-rc.d postgresql enable
-    echo -e "done.\n"
+      echo -n "Enable postgresql... "
+          sudo update-rc.d postgresql enable
+      echo -e "done.\n"
+    else
+      echo "Skipping postgres installation"
+    fi
 
     return 0;
 }
@@ -140,7 +145,7 @@ download_blockchain() {
 restore_blockchain() {
     export PGPASSWORD=$DB_PASSWD
     echo "Restoring blockchain with $DB_SNAPSHOT"
-    gunzip -fcq "$DB_SNAPSHOT" | psql -q -h 127.0.0.1 -U "$DB_UNAME" -d "$DB_NAME" &> /dev/null
+    gunzip -fcq "$DB_SNAPSHOT" | psql -q -h "$DB_HOST" -p $DB_PORT -U "$DB_UNAME" -d "$DB_NAME" &> /dev/null
     if [ $? != 0 ]; then
         echo "X Failed to restore blockchain."
         exit 1
@@ -295,7 +300,7 @@ running() {
 
 show_blockHeight(){
   export PGPASSWORD=$DB_PASSWD
-  blockHeight=$(psql -d $DB_NAME -U $DB_UNAME -h localhost -p 5432 -t -c "select height from blocks order by height desc limit 1")
+  blockHeight=$(psql -d $DB_NAME -U $DB_UNAME -h $DB_HOST -p $DB_PORT -t -c "select height from blocks order by height desc limit 1")
   echo "Block height = $blockHeight"
 }
 
