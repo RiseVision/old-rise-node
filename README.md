@@ -12,14 +12,8 @@ Install Rise (Testnet)
 ```
 git clone -b testnet https://github.com/RiseVision/rise-node.git && rise-node/rise_manager.bash install
 ```
-Update Rise Manager
-```
-./rise_manager.bash update_manager
-```
-Update Rise Client
-```
-./rise_manager.bash update_client
-```
+
+## Available commands
 Start Rise
 ```
 ./rise_manager.bash start
@@ -35,6 +29,14 @@ Reload Rise (stop and start)
 Rise node status, is it running or not?
 ```
 ./rise_manager.bash status
+```
+Update Rise Manager
+```
+./rise_manager.bash update_manager
+```
+Update Rise Client
+```
+./rise_manager.bash update_client
 ```
 Rebuild blockchain from official snapshot
 ```
