@@ -26,7 +26,7 @@ require('colors');
 node.baseUrl = 'http://' + node.config.address + ':' + node.config.port;
 node.api = node.supertest(node.baseUrl);
 
-node.normalizer = 100000000; // Use this to convert SHIFT amount to normal value
+node.normalizer = 100000000; // Use this to convert RISE amount to normal value
 node.blockTime = constants.blockTime; // Block time in miliseconds
 node.blockTimePlus = constants.blockTime+2000; // Block time + 2 seconds in miliseconds
 node.version = constants.currentVersion; // Node version
@@ -71,8 +71,8 @@ if (process.env.SILENT === 'true') {
 	node.debug = console.log;
 }
 
-// Random SHIFT amount
-node.SHIFT = Math.floor(Math.random() * (100000 * 100000000)) + 1;
+// Random RISE amount
+node.RISE = Math.floor(Math.random() * (100000 * 100000000)) + 1;
 
 // Returns a random delegate name
 node.randomDelegateName = function () {
@@ -98,8 +98,8 @@ node.randomProperty = function (obj, needKey) {
 	}
 };
 
-// Returns random SHIFT amount
-node.randomSHIFT = function () {
+// Returns random RISE amount
+node.randomRISE = function () {
 	return Math.floor(Math.random() * (10000 * 100000000)) + (1000 * 100000000);
 };
 

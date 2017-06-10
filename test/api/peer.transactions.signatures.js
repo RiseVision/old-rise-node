@@ -15,7 +15,7 @@ function postTransaction (transaction, done) {
 	});
 }
 
-function sendSHIFT (params, done) {
+function sendRISE (params, done) {
 	var transaction = node.shift.transaction.createTransaction(params.recipientId, params.amount, params.secret);
 
 	postTransaction(transaction, function (err, res) {
@@ -57,7 +57,7 @@ describe('POST /peer/transactions', function () {
 
 				postTransaction(transaction, function (err, res) {
 					node.expect(res.body).to.have.property('success').to.be.not.ok;
-					node.expect(res.body).to.have.property('message').to.match(/Account does not have enough SHIFT: [0-9]+L balance: 0/);
+					node.expect(res.body).to.have.property('message').to.match(/Account does not have enough RISE: [0-9]+L balance: 0/);
 					done();
 				});
 			});
@@ -66,7 +66,7 @@ describe('POST /peer/transactions', function () {
 		describe('when account has funds', function () {
 
 			before(function (done) {
-				sendSHIFT({
+				sendRISE({
 					secret: node.gAccount.password,
 					amount: node.fees.secondPasswordFee + 100000000,
 					recipientId: account.address

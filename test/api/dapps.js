@@ -43,28 +43,28 @@ before(function (done) {
 });
 
 before(function (done) {
-	// Send to SHIFT to account 1 address
+	// Send to RISE to account 1 address
 	setTimeout(function () {
-		var randomSHIFT = node.randomSHIFT();
-		var expectedFee = node.expectedFee(randomSHIFT);
+		var randomRISE = node.randomRISE();
+		var expectedFee = node.expectedFee(randomRISE);
 
 		putTransaction({
 			secret: node.gAccount.password,
-			amount: randomSHIFT,
+			amount: randomRISE,
 			recipientId: account.address
 		}, done);
 	}, 2000);
 });
 
 before(function (done) {
-	// Send to SHIFT to account 2 address
+	// Send to RISE to account 2 address
 	setTimeout(function () {
-		var randomSHIFT = node.randomSHIFT();
-		var expectedFee = node.expectedFee(randomSHIFT);
+		var randomRISE = node.randomRISE();
+		var expectedFee = node.expectedFee(randomRISE);
 
 		putTransaction({
 			secret: node.gAccount.password,
-			amount: randomSHIFT,
+			amount: randomRISE,
 			recipientId: account2.address
 		}, done);
 	}, 2000);
@@ -101,7 +101,7 @@ describe('PUT /dapps', function () {
 
 		node.put('/api/dapps', validParams, function (err, res) {
 			node.expect(res.body).to.have.property('success').to.be.not.ok;
-			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough SHIFT: [0-9]+L balance: 0/);
+			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough RISE: [0-9]+L balance: 0/);
 			done();
 		});
 	});
@@ -319,7 +319,7 @@ describe('PUT /api/dapps/transaction', function () {
 
 		putTransaction(validParams, function (err, res) {
 			node.expect(res.body).to.have.property('success').to.not.be.ok;
-			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough SHIFT: [0-9]+L balance: 0/);
+			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough RISE: [0-9]+L balance: 0/);
 			done();
 		});
 	});
@@ -511,7 +511,7 @@ describe('PUT /api/dapps/withdrawal', function () {
 
 		putWithdrawal(validParams, function (err, res) {
 			node.expect(res.body).to.have.property('success').to.not.be.ok;
-			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough SHIFT: [0-9]+L balance: 0/);
+			node.expect(res.body).to.have.property('error').to.match(/Account does not have enough RISE: [0-9]+L balance: 0/);
 			done();
 		});
 	});

@@ -20,7 +20,7 @@ function putTransaction (params, done) {
 	node.put('/api/transactions', params, done);
 }
 
-function sendSHIFT (account, amount, done) {
+function sendRISE (account, amount, done) {
 	var expectedFee = node.expectedFee(amount);
 
 	putTransaction({
@@ -45,27 +45,27 @@ function sendSHIFT (account, amount, done) {
 
 before(function (done) {
 	setTimeout(function () {
-    sendSHIFT(account, node.randomSHIFT(), done);
+    sendRISE(account, node.randomRISE(), done);
 	}, 2000);
 });
 
 before(function (done) {
 	setTimeout(function () {
-		sendSHIFT(account2, node.randomSHIFT(), done);
+		sendRISE(account2, node.randomRISE(), done);
 	}, 2000);
 });
 
 before(function (done) {
 	setTimeout(function () {
 		// Send 20 SHF
-		sendSHIFT(account2, 20*100000000, done);
+		sendRISE(account2, 20*100000000, done);
 	}, 2000);
 });
 
 before(function (done) {
 	setTimeout(function () {
 		// Send 100 SHF
-		sendSHIFT(account2, 100*100000000, done);
+		sendRISE(account2, 100*100000000, done);
 	}, 2000);
 });
 
@@ -641,7 +641,7 @@ describe('PUT /api/transactions', function () {
 				recipientId: account2.address
 			}, function (err, res) {
 				node.expect(res.body).to.have.property('success').to.be.not.ok;
-				node.expect(res.body).to.have.property('error').to.match(/Account does not have enough SHIFT: [0-9]+L balance: [0-9.]+/);
+				node.expect(res.body).to.have.property('error').to.match(/Account does not have enough RISE: [0-9]+L balance: [0-9.]+/);
 				done();
 			});
 		});
