@@ -119,9 +119,9 @@ describe('GET /api/accounts/getBalance?address=', function () {
 	});
 
 	it('using invalid address should fail', function (done) {
-		getBalance('thisIsNOTAShiftAddress', function (err, res) {
+		getBalance('thisIsNOTARiseAddress', function (err, res) {
 			node.expect(res.body).to.have.property('success').to.be.not.ok;
-			node.expect(res.body).to.have.property('error').to.eql('Object didn\'t pass validation for format address: thisIsNOTALiskAddress');
+			node.expect(res.body).to.have.property('error').to.eql('Object didn\'t pass validation for format address: thisIsNOTARiseAddress');
 			done();
 		});
 	});
@@ -159,9 +159,9 @@ describe('GET /api/accounts/getPublicKey?address=', function () {
 	});
 
 	it('using invalid address should fail', function (done) {
-		getPublicKey('thisIsNOTAShiftAddress', function (err, res) {
+		getPublicKey('thisIsNOTARiseAddress', function (err, res) {
 			node.expect(res.body).to.have.property('success').to.be.not.ok;
-			node.expect(res.body).to.have.property('error').to.contain('Object didn\'t pass validation for format address: thisIsNOTALiskAddress');
+			node.expect(res.body).to.have.property('error').to.contain('Object didn\'t pass validation for format address: thisIsNOTARiseAddress');
 			done();
 		});
 	});
@@ -301,7 +301,7 @@ describe('GET /accounts', function () {
 		getAccounts('thisIsNOTAValidShiftAddress', function (err, res) {
 			node.expect(res.body).to.have.property('success').to.be.not.ok;
 			node.expect(res.body).to.have.property('error');
-			node.expect(res.body.error).to.contain('Object didn\'t pass validation for format address: thisIsNOTALiskAddress');
+			node.expect(res.body.error).to.contain('Object didn\'t pass validation for format address: thisIsNOTARiseAddress');
 			done();
 		});
 	});
