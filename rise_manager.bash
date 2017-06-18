@@ -349,7 +349,7 @@ case $1 in
     ;;
     "reload")
       stop_rise
-      sleep 2
+      sleep 1
       start_rise
       show_blockHeight
       ;;
