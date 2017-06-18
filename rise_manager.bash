@@ -24,10 +24,11 @@ RISE_CONFIG="config.json"
 DB_NAME="$(grep "database" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
 DB_UNAME="$(grep "user" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
 DB_PASSWD="$(grep "password" $RISE_CONFIG | cut -f 4 -d '"' | head -1)"
-DB_SNAPSHOT="blockchain.db.gz"
 NETWORK=""
 set_network
-BLOCKCHAIN_URL="https://downloads.rise.vision/snapshot/$NETWORK"
+GIT_ORIGIN="testnet"
+BLOCKCHAIN_URL="https://downloads.rise.vision/snapshots/$GIT_ORIGIN/latest"
+DB_SNAPSHOT="blockchain.db.gz"
 GIT_BRANCH="$(git branch | sed -n '/\* /s///p')"
 
 install_prereq() {
@@ -120,11 +121,8 @@ download_blockchain() {
 
     if [ "$downloadornot" == "y" ] || [ -z "$downloadornot" ]; then
         rm -f $DB_SNAPSHOT
-        if [ -z "$BLOCKCHAIN_URL" ]; then
-            BLOCKCHAIN_URL="https://downloads.rise.vision/snapshot/$NETWORK"
-        fi
         echo "√ Downloading $DB_SNAPSHOT from $BLOCKCHAIN_URL"
-        curl --progress-bar -o $DB_SNAPSHOT "$BLOCKCHAIN_URL/$DB_SNAPSHOT"
+        curl --progress-bar -o $DB_SNAPSHOT "$BLOCKCHAIN_URL"
         if [ $? != 0 ]; then
             rm -f $DB_SNAPSHOT
             echo "X Failed to download blockchain snapshot."
@@ -140,7 +138,8 @@ download_blockchain() {
 restore_blockchain() {
     export PGPASSWORD=$DB_PASSWD
     echo "Restoring blockchain with $DB_SNAPSHOT"
-    gunzip -fcq "$DB_SNAPSHOT" | psql -q -h 127.0.0.1 -U "$DB_UNAME" -d "$DB_NAME" &> /dev/null
+    # Be sure that all tables exist
+    gunzip -fcq "$DB_SNAPSHOT" | psql -q -h 127.0.0.1 -U "$DB_UNAME" -d "$DB_NAME" &> $HOME/pg.log
     if [ $? != 0 ]; then
         echo "X Failed to restore blockchain."
         exit 1
@@ -311,8 +310,8 @@ parse_option() {
 
 rebuild_rise() {
   create_database
-#  download_blockchain
-#  restore_blockchain
+  download_blockchain
+  restore_blockchain
 }
 
 start_log() {
@@ -363,6 +362,11 @@ case $1 in
       start_rise
       show_blockHeight
       ;;
+    "clean_start")
+      stop_rise
+      create_database
+      start_rise
+    ;;
     "status")
       if running; then
         echo "√ Rise is running."
@@ -380,8 +384,8 @@ case $1 in
     ;;
 
 *)
-    echo 'Available options: install, reload (stop/start), rebuild (official snapshot), start, stop, update_manager, update_client'
-    echo 'Usage: ./rise_installer.bash install'
+    echo 'Available options: install, reload (stop/start), rebuild (official snapshot), clean_start (drop database), start, stop, update_manager, update_client'
+    echo 'Usage: ./rise_manager.bash install'
     exit 1
 ;;
 esac
